@@ -1,0 +1,64 @@
+syntax = "proto3";
+import "google/protobuf/wrappers.proto";
+
+package com.syte.io.semyonm;
+
+message CreateTaskRequest {
+  string title = 1;
+  string message = 2;
+}
+
+message CreateTaskResponse {
+  Task task = 1;
+}
+
+message GetTaskRequest {
+  string id = 1;
+}
+message GetTaskResponse {
+  Task task = 1;
+}
+
+message UpdateTaskStateRequest {
+  string id = 1;
+  TaskState task_state = 2;
+}
+
+message UpdateTaskStateResponse {
+  Task task = 1;
+}
+
+message DeleteTaskRequest {
+  string id = 1;
+}
+
+message DeleteTaskResponse {
+  Task task = 1;
+}
+
+message ListTasksRequest {
+  int32 offset = 1;
+  int32 limit = 2;
+}
+
+message ListTasksResponse {
+  repeated Task tasks = 1;
+  google.protobuf.Int32Value next_offset = 2;
+}
+
+
+message Task {
+  string id = 1;
+  TaskState task_state = 2;
+  string title = 3;
+  string message = 4;
+}
+
+enum TaskState {
+  UNKNOWN = 0;
+  NEW = 1;
+  IN_PROGRESS = 2;
+  COMPLETED = 3;
+  POSTPONED = 4;
+  CANCELLED = 5;
+}
