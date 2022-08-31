@@ -4,6 +4,7 @@ import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
 import com.syte.io.semyonm.TodoList;
 import com.syte.io.semyonm.TodoList.*;
+import com.syte.io.semyonm.facade.ToDoListFacade;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -11,7 +12,13 @@ import java.util.UUID;
 @RestController
 public class TodoListService {
 
-    @PostMapping(path = "/tasks", consumes = "application/json", produces = "application/json")
+    private final ToDoListFacade toDoListFacade;
+
+    public TodoListService(ToDoListFacade toDoListFacade) {
+        this.toDoListFacade = toDoListFacade;
+    }
+
+    @PostMapping(path = "/tasks", consumes = {"application/x-protobuf", "application/json"}, produces = "application/json")
     @ResponseBody
     public CreateTaskResponse createTask(@RequestBody CreateTaskRequest request) {
         return CreateTaskResponse.newBuilder().build();

@@ -34,6 +34,6 @@ dependencies {
 }
 
 test {
-	useJUnitPlatform()
+	useJUnit()
 }
 targetCompatibility = JavaVersion.VERSION_1_9
