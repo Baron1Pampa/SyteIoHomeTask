@@ -43,6 +43,12 @@ public class TodoListService {
     public ListTasksResponse listTasks(@RequestParam(name = "offset", defaultValue = "0") int offset,
                                         @RequestParam(name = "limit", defaultValue = "10") int limit) {
 
+        if (offset <0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Offset must be 0 or larger");
+
+        if (limit <0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Limit must be 0 or larger");
+
         List<DomainTask> domainTasks = toDoListFacade.loadAllTasks(offset, limit);
         List<Task> tasks = domainTasks.stream().map(Converters::domainToProto).toList();
         int nextOffset = tasks.size() < limit ? -1 : offset + limit;
@@ -70,6 +76,11 @@ public class TodoListService {
         Optional<DomainTask> maybeTask = toDoListFacade.deleteTask(taskId);
         Task task = toProtoTaskWithErrorOnEmptyResult(taskId, maybeTask);
         return DeleteTaskResponse.newBuilder().setTask(task).build();
+    }
+
+    @DeleteMapping(path = "/tasks")
+    public void deleteAll(){
+        toDoListFacade.deleteAll();
     }
 
     private Task toProtoTaskWithErrorOnEmptyResult(String taskId, Optional<DomainTask> maybeTask) {

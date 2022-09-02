@@ -1,6 +1,7 @@
 package com.syte.io.semyonm.spring;
 
 import com.google.protobuf.util.JsonFormat;
+import com.syte.io.semyonm.dao.InMemoryToDoListDao;
 import com.syte.io.semyonm.dao.ToDoListDao;
 import com.syte.io.semyonm.facade.ToDoListFacade;
 import com.syte.io.semyonm.facade.ToDoListFacadeManager;
@@ -21,11 +22,11 @@ public class Config {
 
     @Bean
     ToDoListDao toDoListDao() {
-        return null;
+        return new InMemoryToDoListDao();
     }
 
     @Bean
-    ToDoListFacade toDoListFacade() {
-        return new ToDoListFacadeManager();
+    ToDoListFacade toDoListFacade(ToDoListDao toDoListDao) {
+        return new ToDoListFacadeManager(toDoListDao);
     }
 }

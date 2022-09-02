@@ -17,4 +17,6 @@ public interface ToDoListFacade {
     List<DomainTask> loadAllTasks(int offset, int limit);
 
     Optional<DomainTask> deleteTask(String id);
+
+    void deleteAll();
 }

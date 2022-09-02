@@ -4,6 +4,8 @@ import com.google.protobuf.util.JsonFormat;
 import com.syte.io.semyonm.TodoList.GetTaskResponse;
 import com.syte.io.semyonm.TodoList.Task;
 import com.syte.io.semyonm.TodoList.TaskState;
+import com.syte.io.semyonm.domain.DomainTask;
+import com.syte.io.semyonm.domain.DomainTaskByIdComparator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpResponse;
@@ -24,6 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
@@ -48,6 +51,7 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenTaskCreated_thenReturnCreatedTask() throws IOException {
+        clearData();
         String title = "This is a Title";
         String message = "This is a task message";
         TodoList.CreateTaskResponse createTaskResponse = createTaskWithPost(title, message);
@@ -61,11 +65,13 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenNoTaskFound_thenThrow404Code() throws IOException {
+        clearData();
         getTaskWithRequiredStatus(UUID.randomUUID().toString(), HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void whenTaskExists_thenReturnTaskById() throws IOException {
+        clearData();
         String title = "This is a Title";
         String message = "This is a task message";
         Task task = createTaskWithPost(title, message).getTask();
@@ -76,6 +82,7 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenTasksExists_thenReturnAllTasks() throws IOException, URISyntaxException {
+        clearData();
         List<Task> expectedTasks = createTasks(3);
         TodoList.ListTasksResponse listTasksResponse = listTasksWithRequiredStatus(0, 10, HttpStatus.OK);
         int nextOffset = listTasksResponse.getNextOffset();
@@ -89,7 +96,9 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenTasksExists_thenReturnAllTasksPaginated() throws IOException, URISyntaxException {
+        clearData();
         List<Task> expectedTasks = createTasks(10);
+        expectedTasks.sort(new TaskByIdComparator());
         TodoList.ListTasksResponse listTasksResponse = listTasksWithRequiredStatus(0, 2, HttpStatus.OK);
         int nextOffset = listTasksResponse.getNextOffset();
         List<Task> actualTasks = listTasksResponse.getTasksList();
@@ -100,6 +109,7 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenNoTasksExist_thenReturnEmptyList() throws URISyntaxException, IOException {
+        clearData();
         TodoList.ListTasksResponse listTasksResponse = listTasksWithRequiredStatus(0, 2, HttpStatus.OK);
         int nextOffset = listTasksResponse.getNextOffset();
         assertThat(nextOffset, is(-1));
@@ -109,11 +119,13 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenListTaskWithIllegalOffset_thenThrow400Error() throws URISyntaxException, IOException {
+        clearData();
         listTasksWithRequiredStatus(-1, 2, HttpStatus.BAD_REQUEST);
     }
 
     @Test
     public void whenTaskUpdated_thenReturnUpdatedTask() throws IOException {
+        clearData();
         String title = "This is a Title to Update task";
         String message = "This is a task message to be updated";
         TodoList.CreateTaskResponse createTaskResponse = createTaskWithPost(title, message);
@@ -130,11 +142,13 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenTaskToUpdatedNoExists_thenThrow404Error() throws IOException {
+        clearData();
         updateTaskStateWithRequiredStatus(UUID.randomUUID().toString(), TaskState.COMPLETED, HttpStatus.NOT_FOUND);
     }
 
     @Test
     public void whenTaskDelete_thenThrow404UponGet() throws IOException {
+        clearData();
         String title = "This is a Title to Delete task";
         String message = "This is a task message to be deleted";
         TodoList.CreateTaskResponse createTaskResponse = createTaskWithPost(title, message);
@@ -145,6 +159,7 @@ public class ApplicationIntegrationTest {
 
     @Test
     public void whenNoTaskToDelete_thenThrow404() throws IOException {
+        clearData();
         deleteTaskWithRequiredStatus(UUID.randomUUID().toString(), HttpStatus.NOT_FOUND);
     }
 
@@ -213,7 +228,7 @@ public class ApplicationIntegrationTest {
                 .build();
         request.setURI(uri);
         HttpResponse httpResponse = httpClient.execute(request);
-        assertThat(httpResponse.getStatusLine().getStatusCode(), equalTo(status));
+        assertThat(httpResponse.getStatusLine().getStatusCode(), equalTo(status.value()));
         if(status == HttpStatus.OK) {
             byte[] responseAsBytes = httpResponse.getEntity().getContent().readAllBytes();
             String responseAsString = new String(responseAsBytes);
@@ -245,5 +260,22 @@ public class ApplicationIntegrationTest {
         CloseableHttpResponse response = httpClient.execute(httpDelete);
         assertThat(response.getStatusLine().getStatusCode(), equalTo(status.value()));
         response.close();
+    }
+
+    private void clearData() throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpDelete httpDelete = new HttpDelete(getBaseTaskUrl());
+        CloseableHttpResponse response = httpClient.execute(httpDelete);
+        assertThat(response.getStatusLine().getStatusCode(), equalTo(HttpStatus.OK.value()));
+        response.close();
+    }
+
+
+    static class TaskByIdComparator implements Comparator<Task> {
+
+        @Override
+        public int compare(Task o1, Task o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
     }
 }

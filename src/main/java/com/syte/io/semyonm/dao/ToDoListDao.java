@@ -9,10 +9,12 @@ public interface ToDoListDao {
 
     Optional<DomainTask> loadTask(String id);
 
-    Optional<DomainTask> saveTask(DomainTask task);
+    void saveTask(DomainTask task);
 
     List<DomainTask> loadAllTasks(int offset, int limit);
 
     Optional<DomainTask> deleteTask(String id);
+
+    void deleteAll();
 
 }
