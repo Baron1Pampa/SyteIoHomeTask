@@ -12,9 +12,6 @@ message CreateTaskResponse {
   optional Task task = 1;
 }
 
-message GetTaskRequest {
-  string id = 1;
-}
 message GetTaskResponse {
   optional Task task = 1;
 }
@@ -28,17 +25,8 @@ message UpdateTaskStateResponse {
   optional Task task = 1;
 }
 
-message DeleteTaskRequest {
-  string id = 1;
-}
-
 message DeleteTaskResponse {
   optional Task task = 1;
-}
-
-message ListTasksRequest {
-  int32 offset = 1;
-  int32 limit = 2;
 }
 
 message ListTasksResponse {

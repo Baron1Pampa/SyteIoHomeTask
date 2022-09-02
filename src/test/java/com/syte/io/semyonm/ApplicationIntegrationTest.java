@@ -4,8 +4,6 @@ import com.google.protobuf.util.JsonFormat;
 import com.syte.io.semyonm.TodoList.GetTaskResponse;
 import com.syte.io.semyonm.TodoList.Task;
 import com.syte.io.semyonm.TodoList.TaskState;
-import com.syte.io.semyonm.domain.DomainTask;
-import com.syte.io.semyonm.domain.DomainTaskByIdComparator;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpResponse;
@@ -108,7 +106,7 @@ public class ApplicationIntegrationTest {
     }
 
     @Test
-    public void whenTasksExists_thenReturnAllTasksPaginatedWithNon0Offset() throws IOException, URISyntaxException {
+    public void whenTasksExists_thenReturnAllTasksPaginatedWithNonZeroOffset() throws IOException, URISyntaxException {
         clearData();
         List<Task> expectedTasks = createTasks(10);
         expectedTasks.sort(new TaskByIdComparator());
