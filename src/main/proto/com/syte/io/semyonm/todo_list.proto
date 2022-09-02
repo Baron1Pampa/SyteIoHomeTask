@@ -9,14 +9,14 @@ message CreateTaskRequest {
 }
 
 message CreateTaskResponse {
-  Task task = 1;
+  optional Task task = 1;
 }
 
 message GetTaskRequest {
   string id = 1;
 }
 message GetTaskResponse {
-  Task task = 1;
+  optional Task task = 1;
 }
 
 message UpdateTaskStateRequest {
@@ -25,7 +25,7 @@ message UpdateTaskStateRequest {
 }
 
 message UpdateTaskStateResponse {
-  Task task = 1;
+  optional Task task = 1;
 }
 
 message DeleteTaskRequest {
@@ -33,7 +33,7 @@ message DeleteTaskRequest {
 }
 
 message DeleteTaskResponse {
-  Task task = 1;
+  optional Task task = 1;
 }
 
 message ListTasksRequest {
@@ -43,7 +43,7 @@ message ListTasksRequest {
 
 message ListTasksResponse {
   repeated Task tasks = 1;
-  google.protobuf.Int32Value next_offset = 2;
+  optional int32 next_offset = 2;
 }
 
 

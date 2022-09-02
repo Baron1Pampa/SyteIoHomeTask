@@ -1,5 +1,6 @@
 package com.syte.io.semyonm.spring;
 
+import com.google.protobuf.util.JsonFormat;
 import com.syte.io.semyonm.dao.ToDoListDao;
 import com.syte.io.semyonm.facade.ToDoListFacade;
 import com.syte.io.semyonm.facade.ToDoListFacadeManager;
@@ -13,11 +14,13 @@ public class Config {
 
     @Bean
     ProtobufHttpMessageConverter protobufHttpMessageConverter() throws Exception {
-            return new ProtobufJsonFormatHttpMessageConverter();
+        JsonFormat.Printer printer = JsonFormat.printer();
+        printer.includingDefaultValueFields();
+        return new ProtobufJsonFormatHttpMessageConverter(null, printer);
     }
 
     @Bean
-    ToDoListDao toDoListDao (){
+    ToDoListDao toDoListDao() {
         return null;
     }
 
