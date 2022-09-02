@@ -1,6 +1,7 @@
 package com.syte.io.semyonm.facade;
 
 import com.syte.io.semyonm.domain.DomainTask;
+import com.syte.io.semyonm.domain.TaskState;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,12 +13,12 @@ public class ToDoListFacadeManager implements ToDoListFacade {
     }
 
     @Override
-    public DomainTask updateTask(DomainTask task) {
-        return null;
+    public Optional<DomainTask> updateTaskState(String taskId, TaskState newTaskState) {
+        return Optional.empty();
     }
 
     @Override
-    public DomainTask createTask(DomainTask task) {
+    public DomainTask createTask(String title, String message) {
         return null;
     }
 

@@ -16,19 +16,24 @@ public class Converters {
 
 
     public static TodoList.TaskState domainToProto(TaskState taskState) {
-        switch (taskState){
-            case NEW:
-                return TodoList.TaskState.NEW;
-            case IN_PROGRESS:
-                return TodoList.TaskState.IN_PROGRESS;
-            case COMPLETED:
-                return TodoList.TaskState.COMPLETED;
-            case POSTPONED:
-                return TodoList.TaskState.POSTPONED;
-            case CANCELLED:
-                return TodoList.TaskState.CANCELLED;
-        }
-        return TodoList.TaskState.UNKNOWN;
+        return switch (taskState) {
+            case NEW -> TodoList.TaskState.NEW;
+            case IN_PROGRESS -> TodoList.TaskState.IN_PROGRESS;
+            case COMPLETED -> TodoList.TaskState.COMPLETED;
+            case POSTPONED -> TodoList.TaskState.POSTPONED;
+            case CANCELLED -> TodoList.TaskState.CANCELLED;
+        };
+    }
+
+    public static TaskState protoToDomain(TodoList.TaskState taskState) {
+        return switch (taskState) {
+            case NEW ->  TaskState.NEW;
+            case IN_PROGRESS ->TaskState.IN_PROGRESS;
+            case COMPLETED -> TaskState.COMPLETED;
+            case POSTPONED -> TaskState.POSTPONED;
+            case CANCELLED -> TaskState.CANCELLED;
+            default -> throw new IllegalArgumentException("Unexpected task state value: " + taskState);
+        };
     }
 
 }

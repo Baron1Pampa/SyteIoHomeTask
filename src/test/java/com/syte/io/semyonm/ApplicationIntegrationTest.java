@@ -143,6 +143,11 @@ public class ApplicationIntegrationTest {
         getTaskWithRequiredStatus(createTaskResponse.getTask().getId(), HttpStatus.NOT_FOUND);
     }
 
+    @Test
+    public void whenNoTaskToDelete_thenThrow404() throws IOException {
+        deleteTaskWithRequiredStatus(UUID.randomUUID().toString(), HttpStatus.NOT_FOUND);
+    }
+
 
     private String getSingleTaskUrl(String taskId) {
         return getBaseTaskUrl() + "/" + taskId;
