@@ -23,11 +23,11 @@ public class InMemoryToDoListDao implements ToDoListDao {
     public List<DomainTask> loadAllTasks(int offset, int limit) {
         List<DomainTask> allToDoItems = new ArrayList<>(dataMap.values().stream().toList());
         allToDoItems.sort(new DomainTaskByIdComparator());
-        if(offset > allToDoItems.size())
+        if (offset > allToDoItems.size())
             return new ArrayList<>();
-        if(offset + limit > allToDoItems.size())
+        if (offset + limit > allToDoItems.size())
             return allToDoItems.subList(offset, allToDoItems.size());
-        return allToDoItems.subList(offset, limit);
+        return allToDoItems.subList(offset, offset + limit);
     }
 
     @Override

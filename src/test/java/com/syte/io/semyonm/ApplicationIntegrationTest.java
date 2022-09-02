@@ -108,6 +108,19 @@ public class ApplicationIntegrationTest {
     }
 
     @Test
+    public void whenTasksExists_thenReturnAllTasksPaginatedWithNon0Offset() throws IOException, URISyntaxException {
+        clearData();
+        List<Task> expectedTasks = createTasks(10);
+        expectedTasks.sort(new TaskByIdComparator());
+        TodoList.ListTasksResponse listTasksResponse = listTasksWithRequiredStatus(2, 3, HttpStatus.OK);
+        int nextOffset = listTasksResponse.getNextOffset();
+        List<Task> actualTasks = listTasksResponse.getTasksList();
+        assertThat(actualTasks, hasSize(3));
+        assertThat(actualTasks, hasItems(expectedTasks.get(2), expectedTasks.get(3), expectedTasks.get(4)));
+        assertThat(nextOffset, is(5));
+    }
+
+    @Test
     public void whenNoTasksExist_thenReturnEmptyList() throws URISyntaxException, IOException {
         clearData();
         TodoList.ListTasksResponse listTasksResponse = listTasksWithRequiredStatus(0, 2, HttpStatus.OK);
